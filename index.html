@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <link rel="shortcut icon" href="https://avatars.githubusercontent.com/u/178732451?v=4&size=64" type="image/x-icon">
+    <title>JWT and RSA/ECDSA Signatures with JavaScript</title>
+
+    <script src="./index_files/jquery.min.js" type="text/javascript"></script>
+    <link href="./index_files/bootstrap.min.css" rel="stylesheet" media="screen">
+    <link href="./index_files/site.css" rel="stylesheet" type="text/css">
+
+    <script async="" src="./index_files/widgets.js" charset="utf-8"></script>
+
+    <script type="text/javascript" src="./index_files/MathJax.js"></script>
+    <script src="./index_files/bootstrap.min.js" type="text/javascript"></script>
+    <script src="./index_files/MicrosoftAjax.debug.js" type="text/javascript"></script>
+    <!-- Google tag (gtag.js) -->
+    <script async="" src="./index_files/js"></script>
+    <script>window.dataLayer = window.dataLayer || [];
+        function gtag() { dataLayer.push(arguments); }
+        gtag('js', new Date());
+        gtag('config', 'G-KX6DK1KK2X');</script>
+</head>
+
+<body style="width:100%;height:100%">
+<!-- watermark [START]: call in body -->
+    <script src="./index_files/watermark_page.js" type="text/javascript"></script>
+<!-- watermark [END] -->
+
+<div id="MathJax_Message" style="display: none;"></div>
+<div id="page-wrap">
+
+    <div class="w3-container">
+        <div id="header" class="row">
+            <div id="title"></div>
+            <div id="logindisplay">
+
+    <style>
+        /* Style for left alignment */
+        .left-align {
+            text-align: left;
+        }
+    </style>
+
+    <div class="left-align">
+        <text><strong id="helloText"></strong></text>
+    </div>
+
+    <script type="text/javascript" src="./index_files/load_and_type_random_line.js"></script>
+            </div>
+            <div id="tabs_container">
+                <div class="invertedshiftdown">
+                    <ul>
+                        <li><a id="homeLink" href="#">Home</a></li>
+                        <li class="current"><a id="indexLink" href="#">JS JWT</a></li>
+                        <li><a id="link_to_x509_certs" href="#">JS X.509 Certs</a></li>
+                        <li><a id="link_to_js_cipher" href="#">JS ciphers</a></li>
+                        <li><a id="link_to_scrambler" href="#">scrambler</a></li>
+
+                        <li><a id="link_to_about" href="#">About</a></li>
+
+    <script>
+        var homeURL = "https://ursa-mikail.github.io/";
+        var home_ext = "mikail-eliyah.github.io/";
+        document.getElementById("homeLink").href = homeURL + home_ext;
+        document.getElementById("indexLink").href = homeURL + home_ext + "index";
+        document.getElementById("link_to_x509_certs").href = homeURL + "x509_js";   
+        document.getElementById("link_to_js_cipher").href = homeURL + "cipher_js";     
+        document.getElementById("link_to_scrambler").href = homeURL + "scrambler";
+
+        document.getElementById("link_to_about").href = homeURL + home_ext + "about";        
+    </script>
+
+                    </ul>
+                </div>
+            </div>
+         
+            <div id="main" class="row">
+
+<img src="./index_files/header_js.gif" align="left" hspace="0" vspace="0" width="200px" alt="Pigpen" class="has-border">
+<h1 id="logo">JWT and RSA/ECDSA Signatures with JavaScript</h1>
+
+<div id="home">
+<b>[<a href="https://ursa-mikail.github.io/mikail-eliyah.github.io/" target="_top">Home</a>]</b>
+</div>
+
+ Create trusted tokens with JSON Web Tokens (JWT). 3 fields: header; payload; and signature. The signature is used to sign for the data, and can either be with an HMAC method (with a shared secret) or with public key encryption (such as with RSA and ECDSA). With the ECDSA/RSA method, define a private key sign the token and the public key to verify it.
+
+<script src="./index_files/jsrsasign-all-min.js"></script> <!-- main jwt lib -->
+<script src="./index_files/jwt.js"></script>
+
+<div class="indented">
+    <table width="100%">
+        <tbody>
+            <tr>
+            <th valign="top">Method</th>
+            <td style="text-align:left">
+                <p>
+                    RSA:  <input type="button" class="btn btn-medium btn-success" onclick="gojwt(512,&#39;RS256&#39;,document.getElementById(&#39;iss&#39;).value,document.getElementById(&#39;sub&#39;).value,document.getElementById(&#39;jti&#39;).value,document.getElementById(&#39;jti&#39;).value)" value="RS256 (512-bit)">
+
+                    <input type="button" class="btn btn-medium btn-success" onclick="gojwt(738,&#39;RS256&#39;,document.getElementById(&#39;iss&#39;).value,document.getElementById(&#39;sub&#39;).value,document.getElementById(&#39;jti&#39;).value,document.getElementById(&#39;jti&#39;).value)" value="RS256 (738-bit)">
+
+                    <input type="button" class="btn btn-medium btn-success" onclick="gojwt(1024,&#39;RS256&#39;,document.getElementById(&#39;iss&#39;).value,document.getElementById(&#39;sub&#39;).value,document.getElementById(&#39;jti&#39;).value,document.getElementById(&#39;jti&#39;).value)" value="RS256 (1024-bit)">
+
+                </p>
+                <p>
+                    RSA (PSS):  
+                    <input type="button" class="btn btn-medium btn-success" onclick="gojwt(1024,&#39;PS256&#39;,document.getElementById(&#39;iss&#39;).value,document.getElementById(&#39;sub&#39;).value,document.getElementById(&#39;jti&#39;).value,document.getElementById(&#39;jti&#39;).value)" value="PS256 (1024-bit)">
+                </p>
+                <p>
+                    ECDSA:  <input type="button" class="btn btn-medium btn-warning" onclick="gojwt2(&#39;secp256r1&#39;,&#39;ES256&#39;,document.getElementById(&#39;iss&#39;).value,document.getElementById(&#39;sub&#39;).value,document.getElementById(&#39;jti&#39;).value,document.getElementById(&#39;jti&#39;).value)" value="ES256 (ecp256r1)">
+
+                    <input type="button" class="btn btn-medium btn-warning" onclick="gojwt2(&#39;secp256r1&#39;,&#39;ES256&#39;,document.getElementById(&#39;iss&#39;).value,document.getElementById(&#39;sub&#39;).value,document.getElementById(&#39;jti&#39;).value,document.getElementById(&#39;jti&#39;).value)" value="ES256 (ecp256k1)">
+
+                    <input type="button" class="btn btn-medium btn-warning" onclick="gojwt2(&#39;secp384r1&#39;,&#39;ES256&#39;,document.getElementById(&#39;iss&#39;).value,document.getElementById(&#39;sub&#39;).value,document.getElementById(&#39;jti&#39;).value,document.getElementById(&#39;jti&#39;).value)" value="ES256 (secp384r1)">
+                </p>
+
+            </td>
+        </tr>
+
+        <tr>
+            <th valign="top" width="15%">Issuer (ISS):</th>
+            <td>
+                <input id="iss" name="iss" style="width:100%" type="text" value="ursa@home">
+            </td>
+        </tr>
+        <tr>
+            <th valign="top">Subject (sub):</th>
+            <td>
+                <input id="sub" name="sub" style="width:100%" type="text" value="contact N">
+            </td>
+        </tr>
+        <tr>
+            <th valign="top">JWT ID (jti):</th>
+            <td>
+                <input id="jti" name="jti" style="width:100%" type="text" value="">
+            </td>
+        </tr>
+
+        <tr>
+            <th valign="top">Password (Use to sign)</th>
+            <td>
+                <input id="password" name="password" style="width:100%" type="text" value="">
+
+            </td>
+        </tr>
+
+    <script>
+        function getRandomHex(size) {
+            let result = '';
+            const characters = '0123456789abcdef';
+            for (let i = 0; i < size; i++) {
+                result += characters.charAt(Math.floor(Math.random() * characters.length));
+            }
+            return result;
+        }
+
+        const id = 'ID:'+ getRandomHex(10);
+        document.getElementById('jti').value = id;
+        const secret = getRandomHex(20);
+        document.getElementById('password').value = secret;        
+    </script>
+
+        <tr>
+            <th valign="top">Keys</th>
+            <td>
+                <textarea cols="20" id="keys" name="keys" rows="4" style="width:100%">&lt;Keys will appear here&gt;</textarea>
+            </td>
+        </tr>
+
+        <tr>
+            <th valign="top">JWT Signed Token</th>
+            <td>
+                <textarea cols="20" id="JWT" name="JWT" rows="20" style="width:100%">&lt;JWT Signature will appear here&gt;</textarea>
+            </td>
+        </tr>
+
+    </tbody></table>
+</div>
+
+<h2>Notes</h2>
+<p>
+    For a JSON Web Token:
+</p>
+<pre>    
+Methods that can provide a signature include HS256 (HMAC SHA-256), ES256 (ECDSA using P-256 and SHA-256), RS256 ( RSASSA-PKCS1-v1_5 with the SHA-256) and PS256 (RSA-PSS). HS256 uses a password to generate an encryption key for the signature, while ES256 and RS256 require a private key to sign the token and a public key to verify it. In this case, we will use public key encryption to sign the token, and where the private key signs the token, and the public key is used to verify it. 
+</pre>
+<p>For ECDSA:</p>
+<pre>  Generate ECC keys (such as with secp256k1 - as used in Bitcoin and Ethereum)
+</pre>
+
+<div>
+<iframe src="./index_files/footer.html" width="1200" height="400" frameborder="0" title="footer"></iframe>
+</div>
+
+</body></html>
